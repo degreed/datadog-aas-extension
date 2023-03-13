@@ -15,7 +15,8 @@
     [Parameter(Mandatory=$false)][string]$DDService="<not-set>",
     [Parameter(Mandatory=$false)][string]$DDVersion="<not-set>",
     [Parameter(Mandatory=$false)][string]$ExtensionVersion,
-    [Parameter(Mandatory=$false)][Switch]$Remove
+    [Parameter(Mandatory=$false)][Switch]$Remove,
+    [Parameter(Mandatory=$false)][Switch]$IgnoreSiteLifecycle
  )
 
 # 
@@ -56,10 +57,12 @@ $siteExtensionManage="${baseApiUrl}/siteextensions/${Extension}"
 
 $siteApiUrl="https://management.azure.com/subscriptions/${SubscriptionId}/resourceGroups/${ResourceGroup}/providers/Microsoft.Web/sites/${SiteName}"
 
-# Stop the web app
-# https://docs.microsoft.com/en-us/rest/api/appservice/webapps/stop
-Write-Output "[${SiteName}] Stopping webapp"
-az rest -m POST --header "Accept=application/json" -u "${siteApiUrl}/stop?api-version=2019-08-01"
+if (!$IgnoreSiteLifecycle) {
+	# Stop the web app
+	# https://docs.microsoft.com/en-us/rest/api/appservice/webapps/stop
+	Write-Output "[${SiteName}] Stopping webapp"
+	az rest -m POST --header "Accept=application/json" -u "${siteApiUrl}/stop?api-version=2019-08-01"
+}
 
 $skipVar="<not-set>"
 
@@ -142,7 +145,9 @@ else {
 	}
 }
 
-# Start the web app
-# https://docs.microsoft.com/en-us/rest/api/appservice/webapps/start
-Write-Output "[${SiteName}] Starting webapp"
-az rest -m POST --header "Accept=application/json" -u "${siteApiUrl}/start?api-version=2019-08-01"
+if (!$IgnoreSiteLifecycle) {
+	# Start the web app
+	# https://docs.microsoft.com/en-us/rest/api/appservice/webapps/start
+	Write-Output "[${SiteName}] Starting webapp"
+	az rest -m POST --header "Accept=application/json" -u "${siteApiUrl}/start?api-version=2019-08-01"
+}
