@@ -66,7 +66,7 @@ if (!$IgnoreSiteLifecycle) {
 
 $skipVar="<not-set>"
 
-az webapp config appsettings set -n ${SiteName} -g ${ResourceGroup} --settings DD_AAS_SCRIPT_INSTALL=1
+#az webapp config appsettings set -n ${SiteName} -g ${ResourceGroup} --settings DD_AAS_SCRIPT_INSTALL=1
 	
 if ($DDApiKey -ne $skipVar) {
 	az webapp config appsettings set -n ${SiteName} -g ${ResourceGroup} --settings DD_API_KEY=$DDApiKey
